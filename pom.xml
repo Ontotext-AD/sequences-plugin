@@ -11,6 +11,9 @@
     <properties>
         <graphdb.version>9.8.0</graphdb.version>
         <dependency.check.version>6.2.2</dependency.check.version>
+
+        <internal.repo>http://maven.ontotext.com/content/repositories/owlim-releases</internal.repo>
+        <snapshots.repo>http://maven.ontotext.com/content/repositories/owlim-snapshots</snapshots.repo>
     </properties>
 
     <build>
@@ -116,4 +119,23 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>internal</id>
+            <name>GraphDB Releases repository</name>
+            <url>${internal.repo}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>GraphDB Snapshots repository</name>
+            <url>${snapshots.repo}</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:git@github.com:Ontotext-AD/sequences-plugin.git</connection>
+        <developerConnection>scm:git@github.com:Ontotext-AD/sequences-plugin.git</developerConnection>
+        <url>https://github.com/Ontotext-AD/sequences-plugin</url>
+        <tag>HEAD</tag>
+    </scm>
 </project>
