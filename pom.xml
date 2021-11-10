@@ -133,8 +133,8 @@
     </distributionManagement>
 
     <scm>
-        <connection>scm:git@github.com:Ontotext-AD/sequences-plugin.git</connection>
-        <developerConnection>scm:git@github.com:Ontotext-AD/sequences-plugin.git</developerConnection>
+        <connection>scm:git:git@github.com:Ontotext-AD/sequences-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:Ontotext-AD/sequences-plugin.git</developerConnection>
         <url>https://github.com/Ontotext-AD/sequences-plugin</url>
         <tag>HEAD</tag>
     </scm>
