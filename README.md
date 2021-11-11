@@ -48,12 +48,20 @@ INSERT DATA {
 
 ### Using a sequence
 
+#### Processing sequence values on the client 
+
+In this scenario, new and current sequence values can be retrieved on the client where they can be used to generate new data that can be added to GraphDB in the same transaction. For a workaround in the cluster refer to [this section](#workaround-for-using-sequence-values-on-the-client-with-the-graphdb-cluster). 
+
 ---
 **NOTE**
+
+This scenario is not supported using the GraphDB cluster as transactions in the cluster currently cannot see the changes caused by the active transaction. This will be fixed in GraphDB 10.  
 
 Using the below examples will not work inside the GraphDB Workbench as they require a single transaction.
 
 ---
+
+##### Example
 
 In order to use any sequence you must first **start a transaction** and then prepare the sequences for use by executing this update:
 
@@ -89,11 +97,15 @@ SELECT ?current {
 
 Use the obtained values to construct IRIs, assign IDs or any other use case.
 
-#### Advanced example
+#### Using sequence values only on the server
+
+In this scenario, new and current sequence values are available only within the execution context of a SPARQL INSERT update. New data using the sequence values can be gennerated by the same INSERT and added to GraphDB.
+
+##### Example
 
 Prepares the sequences for use and inserts some new data using the sequence `http://example.com/my/seq1` where the subject of the newly inserted data is created from a value obtained from the sequence.
 
-This example will work in the GraphDB Workbench as it performs everything in a single transaction (by separating individual operations using a semicolon).
+This example will work both in the GraphDB cluster (as new sequence values don't need to be exposed to the client) and in the GraphDB Workbench (as it performs everything in a single transaction (by separating individual operations using a semicolon).
 
 ```sparql
 PREFIX seq: <http://www.ontotext.com/plugins/sequences#> 
@@ -168,4 +180,55 @@ INSERT DATA {
 }
 ```
 
+### Workaround for using sequence values on the client with the GraphDB cluster
 
+If you need to process your sequence values on the client in a GraphDB 9.x cluster environment you can create a single-node (i.e. not part of a cluster) worker repository to provide the sequences. It is most convenient to have that repository on the same GraphDB instance as your primary master repository.
+
+Let's call the master repository where you will store your data `master1` and the second worker repository where you will create and use your sequences `seqrepo1`.
+
+#### Managing sequences
+
+Execute all [create](#creating-a-sequence), [drop](#dropping-a-sequence) and [reset](#resetting-a-sequence) statements in `seqrepo1`.
+
+The examples below assume you have created a sequence `http://example.com/my/seq1`.
+
+#### Using sequences on the client
+
+First, you need to obtain one or more new sequence values from the repository `seqrepo1`:
+
+1. Start a transaction in `seqrepo1`
+2. Prepare the sequences for use by executing this in the same transaction:
+    ```sparql
+    PREFIX seq: <http://www.ontotext.com/plugins/sequences#> 
+    
+    INSERT DATA {
+        [] seq:prepare []
+    }
+    ```
+3. Obtain one or more new sequence values from the sequence `http://example.com/my/seq1`:
+    ```sparql
+    PREFIX seq: <http://www.ontotext.com/plugins/sequences#> 
+    PREFIX my: <http://example.com/my/>
+    
+    SELECT ?next {
+        my:seq1 seq:nextValue ?next
+    }
+    ```
+4. Commit the transaction in `seqrepo1`
+
+Then you can process the obtained values on the client, generate new data and insert it into the master repository `master1`:
+
+1. Start a transaction in `master1`
+2. Insert data using the obtained sequence values
+3. Commit the transaction in `master1`
+
+#### Handling backups
+
+To ensure data consistency with backups always follow this order:
+
+* Backup
+  1. Backup the master repository `master1` first
+  2. Backup the sequence repository `seqrepo1` second
+* Restore
+  1. Restore the sequence repository `seqrepo1` first
+  2. Restore the master repository `master1` second
