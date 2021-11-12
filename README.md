@@ -46,7 +46,7 @@ INSERT DATA {
 }
 ```
 
-In the case of a cluster node if the repository existed before registering the plugin, you can the exception `Update would affect a disabled plugin: sequences`. You can enable the plugin with:
+When using the GraphDB cluster, if the repository existed before registering the plugin, you might get the exception `Update would affect a disabled plugin: sequences`. You can enable the plugin with:
 
 ```sparql
 INSERT DATA { [] <http://www.ontotext.com/owlim/system#startplugin> "sequences".}
@@ -239,16 +239,19 @@ To ensure data consistency with backups always follow this order:
   1. Restore the sequence repository `seqrepo1` first
   2. Restore the master repository `master1` second
 
-Another alternative is to not backup `seqrepo1` repository, but after a restore to recreate the sequence and the repository with the latest used value from the `master1` repository. Here is a sample query that quickly retrieve the last used value:
+An alternative would be to not backup the `seqrepo1` repository but simply recreate the repository and the sequence (or reset the sequence) with the next potential sequence value from the `master1` repository. Here is a sample query that retrieves the next potential value (which is equal to the last used value + 1):
 
 ```sparql
 PREFIX ent: <http://www.ontotext.com/owlim/entity#>
 PREFIX my: <http://example.com/my/>
-SELECT ?lastId WHERE {
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+SELECT ?nextValue WHERE {
     ?type a my:Type1;
           ent:id ?id .
-    BIND(xsd:int(REPLACE(STR(?id), "http://example.com/my-data/test/","", "i")) as ?lastId)
+    BIND(xsd:int(REPLACE(STR(?type), "http://example.com/my-data/test/", "")) + 1 as ?nextValue)
 }
-ORDER BY ?id
+ORDER BY DESC(?id)
 LIMIT 1
 ```
+
+Note that the above query assumes sequence values were used to generate IRIs, and IRIs with higher values were used for the first time _after_ IRIs with lower values were used. 
