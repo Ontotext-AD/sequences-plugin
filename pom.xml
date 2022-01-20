@@ -7,7 +7,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <graphdb.version>9.8.0</graphdb.version>
+        <graphdb.version>10.0.0-RDF4J4-BOOTSTRAP1</graphdb.version>
         <dependency.check.version>6.2.2</dependency.check.version>
 
         <internal.repo>http://maven.ontotext.com/content/repositories/owlim-releases</internal.repo>
@@ -111,7 +111,7 @@
 
         <dependency>
             <groupId>com.ontotext.graphdb</groupId>
-            <artifactId>graphdb-free-runtime</artifactId>
+            <artifactId>graphdb-runtime</artifactId>
             <version>${graphdb.version}</version>
             <scope>provided</scope>
         </dependency>
