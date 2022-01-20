@@ -2,11 +2,10 @@ package com.ontotext.trree.plugin.sequences;
 
 import com.ontotext.test.functional.base.SingleRepositoryFunctionalTest;
 import com.ontotext.test.utils.OwlimSeRepositoryDescription;
-import com.ontotext.trree.free.GraphDBFreeSailFactory;
-import com.ontotext.trree.monitorRepository.MonitorRepositoryFactory;
+import com.ontotext.trree.graphdb.GraphDBRepositoryFactory;
+import com.ontotext.trree.graphdb.GraphDBSailFactory;
 import org.eclipse.rdf4j.model.Literal;
 import org.eclipse.rdf4j.model.Value;
-import org.eclipse.rdf4j.model.vocabulary.RDF;
 import org.eclipse.rdf4j.model.vocabulary.XSD;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
@@ -16,14 +15,8 @@ import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,9 +33,9 @@ public class TestSequencesPlugin extends SingleRepositoryFunctionalTest {
         final OwlimSeRepositoryDescription repositoryDescription = new OwlimSeRepositoryDescription();
         final OwlimSeRepositoryDescription.OWLIMSailConfigEx sailConfig = repositoryDescription.getOwlimSailConfig();
         sailConfig.setRuleset("empty");
-        sailConfig.setType(GraphDBFreeSailFactory.SAIL_TYPE);
+        sailConfig.setType(GraphDBSailFactory.SAIL_TYPE);
         SailRepositoryConfig sailrepositoryConfig = new SailRepositoryConfig(sailConfig);
-        sailrepositoryConfig.setType(MonitorRepositoryFactory.REPOSITORY_TYPE);
+        sailrepositoryConfig.setType(GraphDBRepositoryFactory.REPOSITORY_TYPE);
         return repositoryDescription.getRepositoryConfig();
     }
 
