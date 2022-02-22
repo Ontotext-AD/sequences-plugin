@@ -2,10 +2,10 @@
 
 The Sequences plugin provides transactional sequences for GraphDB. A sequence is a long counter that can be atomically incremented in a transaction to provide incremental IDs.
 
-See more information on its usage [here](https://graphdb.ontotext.com/documentation/free/sequences-plugin.html).
+See more information on its usage [here](https://graphdb.ontotext.com/documentation/9.11/enterprise/sequences-plugin.html).
 
 See additional documentation on the GraphDB Plugin API 
-[here](http://graphdb.ontotext.com/free/plug-in-api.html). 
+[here](https://graphdb.ontotext.com/enterprise/plug-in-api.html). 
 
 ## Deployment
 
