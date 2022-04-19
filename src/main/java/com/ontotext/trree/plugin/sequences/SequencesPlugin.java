@@ -14,7 +14,9 @@ import com.ontotext.trree.sdk.StatementIterator;
 import com.ontotext.trree.sdk.UpdateInterpreter;
 import gnu.trove.TLongObjectHashMap;
 import org.eclipse.rdf4j.model.BNode;
+import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Literal;
+import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
 
@@ -35,6 +37,8 @@ public class SequencesPlugin extends PluginBase implements PluginTransactionList
     private static final String PREPARE_LOCAL_NAME = "prepare";
     private static final String NEXT_VALUE_LOCAL_NAME = "nextValue";
     private static final String CURRENT_VALUE_LOCAL_NAME = "currentValue";
+
+    private static final IRI RESET_IRI = SimpleValueFactory.getInstance().createIRI(NS, RESET_LOCAL_NAME);
 
     private long createSequenceId;
     private long dropSequenceId;
@@ -146,6 +150,12 @@ public class SequencesPlugin extends PluginBase implements PluginTransactionList
             long value;
             if (predicate == nextValueId) {
                 value = sequence.nextValue();
+                // Add a statement that resets the sequence to the last obtained value (+1 because reset will subtract 1)
+                // via a statement that will preserve the semantics of not modifying the state of a plugin via a query.
+                // This statement will also be the sole sequence changing trigger when the transaction is replayed
+                // in a cluster environment.
+                pluginConnection.getRepository().addStatement((Resource) pluginConnection.getEntities().get(subject),
+                        RESET_IRI, SimpleValueFactory.getInstance().createLiteral(value + 1));
             } else {
                 value = sequence.currentValue();
             }
@@ -192,9 +202,10 @@ public class SequencesPlugin extends PluginBase implements PluginTransactionList
                 throw new PluginException("Sequence " + subjectValue + " does not exist");
             }
 
-            sequence.setValue(parseNumber(pluginConnection, object));
+            long value = parseNumber(pluginConnection, object);
+            sequence.setValue(value);
 
-            getLogger().debug("Reset sequence {}", subjectValue);
+            getLogger().debug("Set sequence {} to value {}", subjectValue, value);
         } else if (predicate == prepareSequenceId) {
             getLogger().debug("Prepared sequences");
         }

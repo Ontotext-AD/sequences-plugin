@@ -162,6 +162,8 @@ public class TestSequencesPlugin extends SingleRepositoryFunctionalTest {
             assertEquals(sequence1, getNextValue(connection, "urn:myseq1"));
             assertEquals(sequence1 + 1, getNextValue(connection, "urn:myseq1"));
             assertEquals(sequence1 + 1, getCurrentValue(connection, "urn:myseq1"));
+            assertEquals(sequence1 + 1, getCurrentValue(connection, "urn:myseq1"));
+            assertEquals(sequence1 + 1, getCurrentValue(connection, "urn:myseq1"));
             assertEquals(sequence2, getNextValue(connection, "urn:myseq2"));
             assertEquals(sequence1 + 1, getCurrentValue(connection, "urn:myseq1"));
             assertEquals(sequence1 + 2, getNextValue(connection, "urn:myseq1"));
