@@ -1,5 +1,7 @@
 package com.ontotext.trree.plugin.sequences;
 
+import com.ontotext.graphdb.Config;
+import com.ontotext.test.TemporaryLocalFolder;
 import com.ontotext.test.functional.base.SingleRepositoryFunctionalTest;
 import com.ontotext.test.utils.OwlimSeRepositoryDescription;
 import com.ontotext.trree.graphdb.GraphDBRepositoryFactory;
@@ -13,6 +15,9 @@ import org.eclipse.rdf4j.repository.config.RepositoryConfig;
 import org.eclipse.rdf4j.repository.sail.config.SailRepositoryConfig;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutionException;
@@ -28,6 +33,20 @@ import static org.junit.Assert.fail;
  * Tests for using the Sequences plugin
  */
 public class TestSequencesPlugin extends SingleRepositoryFunctionalTest {
+    @ClassRule
+    public static TemporaryLocalFolder tmpFolder = new TemporaryLocalFolder();
+
+    @BeforeClass
+    public static void setWorkDir() {
+        System.setProperty("graphdb.home.work", String.valueOf(tmpFolder.getRoot()));
+        Config.reset();
+    }
+
+    @AfterClass
+    public static void resetWorkDir() {
+        System.clearProperty("graphdb.home.work");
+        Config.reset();
+    }
     @Override
     protected RepositoryConfig createRepositoryConfiguration() {
         final OwlimSeRepositoryDescription repositoryDescription = new OwlimSeRepositoryDescription();
