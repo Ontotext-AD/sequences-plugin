@@ -12,7 +12,7 @@ import com.ontotext.trree.sdk.RequestContext;
 import com.ontotext.trree.sdk.ShutdownReason;
 import com.ontotext.trree.sdk.StatementIterator;
 import com.ontotext.trree.sdk.UpdateInterpreter;
-import gnu.trove.TLongObjectHashMap;
+import gnu.trove.map.hash.TLongObjectHashMap;
 import org.eclipse.rdf4j.model.BNode;
 import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Literal;
