@@ -7,7 +7,7 @@
     <version>2.0-SNAPSHOT</version>
 
     <properties>
-        <graphdb.version>12.0.0-Trove4J-RC1</graphdb.version>
+        <graphdb.version>12.0.0-TR9</graphdb.version>
         <java.level>25</java.level>
         <dependency.check.version>6.2.2</dependency.check.version>
 
@@ -115,7 +115,7 @@
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>5.12.2</version>
+            <version>6.1.3</version>
             <scope>test</scope>
         </dependency>
 
